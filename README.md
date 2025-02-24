@@ -14,7 +14,7 @@ A aplicação permite consultar a temperatura em graus Celsius, Fahrenheit, Kelv
 ## Tracing distribuído
 Ao executar a aplicação, também subimos a implementação do tracing distribuído com OTEL e Zipkin. Essa implementação nos possibilita acompanhar a execução de ambos os serviços, assim como suas chamadas externas.
 
-* Os traces podem ser visualizados pelo painel do Zipkin, acessando `http://localhost:9412/`.
+* Os traces podem ser visualizados pelo painel do Zipkin, acessando `http://localhost:9411/`.
 
 Abertura dos traces:
 1. service-a-request - Execução do serviço A (input)

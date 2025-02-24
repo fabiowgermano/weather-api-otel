@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1 
 version: "3"
 
 services:
@@ -30,10 +29,11 @@ services:
   
   zipkin:
     image: openzipkin/zipkin:latest
+    environment:
+      - JAVA_OPTS=-Xms1024m -Xmx1024m -XX:+ExitOnOutOfMemoryError
     restart: always
     ports:
       - "9411:9411"
-
 
   otel-collector:
     image: otel/opentelemetry-collector:latest
@@ -49,6 +49,11 @@ services:
       - "13133:13133" # health_check extension
       - "4317:4317"   # OTLP gRPC receiver
       - "55679:55679" # zpages extension
+    depends_on:
+      - jaeger
+      - zipkin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:13133"]
 
   input:
     build:
@@ -59,7 +64,6 @@ services:
       - input/cmd/microservice/.env
     depends_on:
       - otel-collector
-      - zipkin
 
   orchestrator:
     build:
@@ -69,5 +73,4 @@ services:
     env_file:
       - orchestrator/cmd/microservice/.env
     depends_on:
-      - otel-collector
-      - zipkin
+      - input
